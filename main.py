@@ -1,6 +1,6 @@
 from tinydb import TinyDB, Query
 from tinydb.table import Document
-from dataclasses import asdict, fields
+from dataclasses import fields
 import json
 
 class Species(Document):
@@ -71,14 +71,14 @@ def dump(species, datapath="atomdb_data"):
 
 def load(elem, mult, nexc=0, dataset="default", datapath="atomdb_data"):
     db = TinyDB(f"{datapath}/{dataset}.json")
-    print("Database contents:", db.all())  # Debug print
+    print("Database contents:", db.all())
     query = Query()
     result = db.search(
         (query.elem == elem)
         & (query.mult == mult)
         & (query.nexc == nexc)
     )
-    print(f"hena result {result}")
+    print(f" load result {result}")
     if result:
         return Species.from_dict(dataset, result[0])
     else:
@@ -91,10 +91,9 @@ fields = {
         "nspin": 0,
         "nexc": 0,
         "energy": -0.5,
-        "mult": 1,
+        "mult": 2,
     }
 species = Species("default", fields)
-print(f"here is species  {species} ")
 dump(species)
-loaded_species = load("H", 1, 0)
-print(f"here load {loaded_species}")
+loaded_species = load("H", 2, 0)
+print(f" load result {loaded_species}")
