@@ -3,13 +3,22 @@ from tinydb.table import Document
 from dataclasses import fields
 import json
 
+import gzip
+import json
+import numpy as np
+import yaml
+from dataclasses import dataclass, asdict, field
+from tinydb import TinyDB, Query
+from tinydb.storages import Storage
+from typing import Dict, Any, Optional
+import logging
+
 class Species(Document):
     """
     Species is a class for representing atomic and ionic species.
     """
 
     def __init__(self, dataset, fields, spinpol=1, doc_id=None):
-        #why kwargs??
         super().__init__(value=fields, doc_id=doc_id)
         self._dataset = dataset.lower()
         self._spinpol = spinpol
