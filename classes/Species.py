@@ -1,44 +1,42 @@
-from dataclasses import dataclass, asdict, field
-from typing import Dict, Any, Optional
+from dataclasses import dataclass, asdict
+from typing import Dict, Any
 
 @dataclass
 class Species:
     """
-    Species is a class for representing atomic and ionic species.
+    Species is for representing atomic and ionic species
     """
 
-    def __init__(self, dataset, fields, spinpol=1, doc_id=None):
-        super().__init__(value=fields, doc_id=doc_id)
-        self._dataset = dataset.lower()
-        self._spinpol = spinpol
-        self._fields = fields
+    dataset: str
+    elem: str
+    atnum: int
+    nelec: int
+    nspin: int
+    nexc: int
+    energy: float
+    mult: int
+    spinpol: int = 1
+    doc_id: int = None
+
+    def __init__(self, dataset: str, fields, spinpol= 1, doc_id: int = None):
+        self.dataset = dataset.lower()
+        self.spinpol = spinpol
+        self.doc_id = doc_id
 
         # Instead of manually assigning each field (for ex: self.elem = fields["elem"])
         for field_name, value in fields.items():
             setattr(self, field_name, value)
 
     def to_dict(self):
-        # if no Conversion Required anymore
-        # return self._fields
-        return asdict(self._fields)
-
-
+        return asdict(self)
 
     def get_data(self):
-        """simply returns self._fields dict"""
-        return self._fields
+        return self.to_dict()
 
     @classmethod
-    def from_dict(cls, dataset, data):
-        """create a species instance from a dictionary"""
+    def from_dict(cls, dataset: str, data):
         return cls(dataset, data)
-
-
-    @property
-    def dataset(self):
-        """return the dataset name"""
-        return self._dataset
 
     @property
     def charge(self):
-        return self._fields.atnum - self._fields.nelec
+        return self.atnum - self.nelec

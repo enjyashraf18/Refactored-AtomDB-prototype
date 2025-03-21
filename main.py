@@ -1,12 +1,8 @@
-from classes.ZipFileStorage import ZipFileStorage
-
-
-
-
 import json
 import os
 from classes.Species import Species
 from classes.SpeciesDB import SpeciesDB
+from classes.ZipFileStorage import ZipFileStorage
 import logging
 
 # Configure logging
@@ -15,20 +11,21 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     fields = {
-        "elem": "H",
+        "elem": "E",
         "atnum": 1,
         "nelec": 1,
         "nspin": 0,
         "nexc": 0,
-        "energy": -0.5,
-        "mult": 2,
+        "energy": -0.35,
+        "mult": 3,
     }
 
-    species = Species(dataset="default", **fields)
-    db_handler = SpeciesDB()
-    db_handler.dump(species)
-    loaded_species = db_handler.load("H", 2, 0)
+    # initialization
+    species_db = SpeciesDB("data", {}, Species, ZipFileStorage)
+    species = Species(dataset="default", fields=fields)
+
+    # dump species to db
+    species_db.dump(species)
+    loaded_species = species_db.load("O", 3, 0)
     logger.info(f"Loaded species: {loaded_species}")
-    db_handler.close()
-
-
+    species_db.close()
