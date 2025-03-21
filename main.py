@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     fields = {
-        "elem": "E",
+        "elem": "X",
         "atnum": 1,
         "nelec": 1,
         "nspin": 0,
@@ -26,6 +26,20 @@ if __name__ == "__main__":
 
     # dump species to db
     species_db.dump(species)
-    loaded_species = species_db.load("O", 3, 0)
-    logger.info(f"Loaded species: {loaded_species}")
+
     species_db.close()
+
+    # found in the db
+    loaded_species = species_db.load("X", 3, 0)
+
+    # element found in the db but with different parameters
+    loaded_species = species_db.load("X", 2, 0)
+
+    #not found in the db
+    loaded_species = species_db.load("Q", 3, 0)
+
+    # logger.info(f"Loaded species: {loaded_species}")
+
+
+
+

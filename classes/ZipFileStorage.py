@@ -1,5 +1,7 @@
 import json
 import os
+import shutil
+
 from tinydb import Storage
 from typing import Dict, Any
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -45,7 +47,7 @@ class ZipFileStorage(Storage):
 
     def close(self):
         try:
-            import shutil
             shutil.rmtree(self.temp_dir)
         except Exception as e:
             logger.error(f"error cleaning up temporary directory: {e}")
+

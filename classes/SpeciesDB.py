@@ -21,10 +21,6 @@ class SpeciesDB:
         print(f"db[elem] in get_db {self.db[elem]}")
         return self.db[elem]
 
-    def get_db2(self, elem):
-        if elem not in self.db:
-            return None
-        return self.db[elem]
 
     def create_db(self, elem: str):
         db_path = f"{self.datapath}/{elem}_species.zip"
@@ -44,24 +40,35 @@ class SpeciesDB:
             db.insert(species.to_dict())
 
 
+
     def load(self, elem: str, mult, nexc=0, dataset: str = "default"):
-        db = self.get_db2(elem)
-        if db is not None:
+        # path to the zip file in the "data" folder
+        db_path = f"{self.datapath}/{elem}_species.zip"
+
+        # check if the zip file exists in the folder
+        if os.path.exists(db_path):
+            db = TinyDB(db_path, storage=self.zip_file_storage_class)
             Species = Query()
+
             result = db.search(
                 (Species.elem == elem) &
                 (Species.mult == mult) &
                 (Species.nexc == nexc) &
                 (Species.dataset == dataset)
             )
+            db.close()
+
+
             if result:
                 print(f"data found {result}")
                 return self.species_class.from_dict(dataset, result[0])
             else:
-                raise ValueError("Not found in the database")
-
+                print(f"No matched parameters for {elem} element")
+                # raise ValueError("Not found in the database")
         else:
-            raise ValueError("Does not exist in the database")
+            print(f"{elem} element does not exist in the database")
+            # raise ValueError("Does not exist in the database")
+        return None  # Return None if nothing is found
 
 
     def close(self):
