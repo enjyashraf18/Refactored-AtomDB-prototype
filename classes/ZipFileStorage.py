@@ -15,23 +15,33 @@ class ZipFileStorage(Storage):
         self.filename = filename
         self.temp_dir = f"temp_db_{os.path.basename(filename).replace('.zip', '')}"
         os.makedirs(self.temp_dir, exist_ok=True)
-        self.cache = self._load_cache()
+        # self.cache = self._load_cache()
+        self.cache = {}
 
     def _load_cache(self):
+        """ Load data from the zip file into a dictionary """
+        if not os.path.exists(self.filename):
+            return {}
+
         try:
-            if os.path.exists(self.filename):
-                with ZipFile(self.filename, "r") as zip_file:
-                    zip_file.extractall(self.temp_dir)
-                    db_file = os.path.join(self.temp_dir, "db.json")
-                    if os.path.exists(db_file):
-                        with open(db_file, "r") as f:
-                            return json.load(f)
+            # extracting zip contents to temp directory
+            with ZipFile(self.filename, "r") as zip_file:
+                zip_file.extractall(self.temp_dir)
+
+            # loading json data (if it exists)
+            db_file = os.path.join(self.temp_dir, "db.json")
+            if os.path.exists(db_file):
+                with open(db_file, "r") as f:
+                    return json.load(f)
             return {}
         except Exception as e:
             logger.error(f"Error loading cache: {e}")
             return {}
 
     def read(self):
+        # lazy loading
+        if not self.cache:
+            self.cache = self._load_cache()
         return self.cache
 
     def write(self, data):

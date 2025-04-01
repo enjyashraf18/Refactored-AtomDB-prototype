@@ -20,6 +20,7 @@ class Species:
 
 
     def __post_init__(self):
+        # customization for dataset only (temp)
         self.dataset = self.dataset.lower()
 
     def to_dict(self):
