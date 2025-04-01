@@ -16,13 +16,14 @@ if __name__ == "__main__":
         "nelec": 1,
         "nspin": 0,
         "nexc": 0,
-        "energy": -0.35,
-        "mult": 3,
+        "energy": -0.295,
+        "mult": 5,
     }
 
     # initialization
     species_db = SpeciesDB("data", {}, Species, ZipFileStorage)
-    species = Species(dataset="default", fields=fields)
+    species = Species(dataset="default", **fields)
+
 
     # dump species to db
     species_db.dump(species)
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     species_db.close()
 
     # found in the db
-    loaded_species = species_db.load("X", 3, 0)
+    loaded_species = species_db.load("X", 5, 0)
 
     # element found in the db but with different parameters
     loaded_species = species_db.load("X", 2, 0)

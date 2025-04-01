@@ -18,14 +18,9 @@ class Species:
     spinpol: int = 1
     doc_id: int = None
 
-    def __init__(self, dataset: str, fields, spinpol= 1, doc_id: int = None):
-        self.dataset = dataset.lower()
-        self.spinpol = spinpol
-        self.doc_id = doc_id
 
-        # Instead of manually assigning each field (for ex: self.elem = fields["elem"])
-        for field_name, value in fields.items():
-            setattr(self, field_name, value)
+    def __post_init__(self):
+        self.dataset = self.dataset.lower()
 
     def to_dict(self):
         return asdict(self)
@@ -35,7 +30,7 @@ class Species:
 
     @classmethod
     def from_dict(cls, dataset: str, data):
-        return cls(dataset, data)
+        return cls(**data)
 
     @property
     def charge(self):
